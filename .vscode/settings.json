@@ -1,0 +1,19 @@
+{
+  // Coding Conventions
+  // https://confluence.abc-dev.net.au/display/PL/Coding+Conventions
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+
+  // Disable default JS validation that will complain about Flow syntax.
+  "javascript.validate.enable": false,
+
+  // Settings for Prettier
+  "editor.formatOnSave": true,
+  "editor.wordWrapColumn": 120,
+  "editor.wordWrap": "wordWrapColumn",
+  "prettier.singleQuote": true,
+  "prettier.eslintIntegration": true,
+
+  // Settings for EsLint
+  "eslint.nodePath": "node_modules"
+}

@@ -1,0 +1,10 @@
+{
+  "extends": ["airbnb", "prettier", "prettier/react"],
+  "plugins": ["babel", "prettier", "react", "react-hooks", "import", "jest"],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      { "trailingComma": "none", "singleQuote": true }
+    ]
+  }
+}
