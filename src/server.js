@@ -1,7 +1,7 @@
 const express = require('express');
 const Project = require('@lerna/project');
 
-const server = projectPackages => {
+const server = (projectPackages, scopedDependencies) => {
   const app = express();
   // const lernaProject = new Project();
 
@@ -32,13 +32,13 @@ const server = projectPackages => {
   //   color = "0.06666666666666667 1 1"
   // ];
 
-  function getDotElements(packages) {
+  function getDotElements(packages, scopedDependencies) {
     return packages
       .map(pkg => {
         if (pkg.dependencies) {
           return Object.keys(pkg.dependencies)
             .map(dependency => {
-              if (dependency.match(/@abcaustralia/gi)) {
+              if (dependency.match(new RegExp(scopedDependencies))) {
                 return `
                  "${pkg.name}" [
                     style = filled,
@@ -64,7 +64,7 @@ const server = projectPackages => {
   app.use('/', (req, res) => {
     try {
       // console.log(projectPackages);
-      const dotElements = getDotElements(projectPackages);
+      const dotElements = getDotElements(projectPackages, scopedDependencies);
       // console.log(dotElements);
 
       const dotScript = `

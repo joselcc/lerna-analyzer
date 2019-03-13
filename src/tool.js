@@ -16,6 +16,7 @@ class ReleaseCommand {
   constructor(YargsConfig) {
     this.lernaProject = new Project();
     this.scope = YargsConfig.builder.scope.default;
+    this.scopedDependencies = YargsConfig.builder.scope.scopedDependencies;
     this.scopedPackages = [];
   }
 
@@ -55,13 +56,14 @@ class ReleaseCommand {
    */
   handler = argv => {
     this.scope = argv.scope;
+    this.scopedDependencies = argv.scopedDependencies;
     console.log(this.scope);
 
     this.lernaProject
       .getPackages()
       .then(projectPackages => {
         this._setScopedPackages(projectPackages);
-        server(this.scopedPackages);
+        server(this.scopedPackages, this.scopedDependencies);
       })
       .catch(err => {
         log.error(err);
@@ -79,6 +81,11 @@ const YargsConfig = {
   builder: {
     scope: {
       describe: 'Glob for scoped packages',
+      default: '.*',
+      type: 'string'
+    },
+    scopedDependencies: {
+      describe: 'Glob for scoped dependencies',
       default: '.*',
       type: 'string'
     }
