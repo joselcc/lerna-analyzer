@@ -1,6 +1,7 @@
 import express from 'express';
 import Project from '@lerna/project';
 import opener from 'opener';
+import Ora from 'Ora';
 
 // const express = require('express');
 // const Project = require('@lerna/project');
@@ -36,7 +37,13 @@ import opener from 'opener';
 // ];
 
 const server = (projectPackages, scopedDependencies, options) => {
+  const spinner = new Ora({
+    text: 'Preparing server',
+    spinner: 'dots' // check more here https://github.com/sindresorhus/cli-spinners/blob/master/spinners.json
+  });
+  spinner.start();
   const app = express();
+
   const { open } = options;
 
   function getDotElements(packages, scopedDependencies) {
@@ -65,8 +72,6 @@ const server = (projectPackages, scopedDependencies, options) => {
       .filter(el => el !== '')
       .join('\n');
   }
-
-  console.log(process.cwd());
 
   app.use('/', (req, res) => {
     try {
@@ -106,6 +111,8 @@ const server = (projectPackages, scopedDependencies, options) => {
       console.error(err);
     }
   });
+
+  spinner.succeed();
 
   app.listen(3001, () => {
     console.log('listening http://localhost:3001');

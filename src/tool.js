@@ -7,6 +7,7 @@ import dedent from 'dedent';
 import Project from '@lerna/project'; // eslint-disable-line import/no-extraneous-dependencies
 import { box } from 'ascii-box';
 import log from 'npmlog';
+import Ora from 'ora';
 import server from './server';
 
 /**
@@ -61,9 +62,17 @@ class ReleaseCommand {
     this.open = argv.open;
     console.log(this.scope);
 
+    const spinner = new Ora({
+      text: 'Loading lerna project packages',
+      spinner: 'dots' // check more here https://github.com/sindresorhus/cli-spinners/blob/master/spinners.json
+    });
+
+    spinner.start();
+
     this.lernaProject
       .getPackages()
       .then(projectPackages => {
+        spinner.succeed();
         this._setScopedPackages(projectPackages);
         server(this.scopedPackages, this.scopedDependencies, {
           open: this.open
