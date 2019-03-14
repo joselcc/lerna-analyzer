@@ -1,36 +1,43 @@
-const express = require('express');
-const Project = require('@lerna/project');
+import express from 'express';
+import Project from '@lerna/project';
+import opener from 'opener';
 
-const server = (projectPackages, scopedDependencies) => {
+// const express = require('express');
+// const Project = require('@lerna/project');
+// const opener = require('opener');
+
+// const lernaProject = new Project();
+
+// test this in http://www.webgraphviz.com/
+// const dot = `
+// digraph  {
+//   rankdir=LR;
+//   node [ fontsize=18 ];
+//   edge [ fontsize=10 ];
+
+//   rocket [
+//     style = filled,
+//     fontsize = 36,
+//     fontname = "Helvetica-Outline",
+//     fontcolor = white,
+//     color = "0.06666666666666667 1 1"
+//   ];
+
+//   rocket -> b [ fontsize=12, label = "import", style="filled",fillcolor="0.647 0.204 1.000", color="0.647 0.204 1.000"];
+//   b -> c [ label = "import" ];
+//   rocket -> c [ label = "import" ];
+// }
+// `;
+
+// "@abcaustralia/rocket" [
+//   style = filled,
+//   fontcolor = white,
+//   color = "0.06666666666666667 1 1"
+// ];
+
+const server = (projectPackages, scopedDependencies, options) => {
   const app = express();
-  // const lernaProject = new Project();
-
-  // test this in http://www.webgraphviz.com/
-  // const dot = `
-  // digraph  {
-  //   rankdir=LR;
-  //   node [ fontsize=18 ];
-  //   edge [ fontsize=10 ];
-
-  //   rocket [
-  //     style = filled,
-  //     fontsize = 36,
-  //     fontname = "Helvetica-Outline",
-  //     fontcolor = white,
-  //     color = "0.06666666666666667 1 1"
-  //   ];
-
-  //   rocket -> b [ fontsize=12, label = "import", style="filled",fillcolor="0.647 0.204 1.000", color="0.647 0.204 1.000"];
-  //   b -> c [ label = "import" ];
-  //   rocket -> c [ label = "import" ];
-  // }
-  // `;
-
-  // "@abcaustralia/rocket" [
-  //   style = filled,
-  //   fontcolor = white,
-  //   color = "0.06666666666666667 1 1"
-  // ];
+  const { open } = options;
 
   function getDotElements(packages, scopedDependencies) {
     return packages
@@ -92,7 +99,7 @@ const server = (projectPackages, scopedDependencies) => {
           .renderDot('${dotScript.replace(/\n/gi, '')}');
   
         </script>
-        <pre>${dotScript}</pre>
+        <pre style="display: none">${dotScript}</pre>
       `;
       res.send(html);
     } catch (err) {
@@ -103,6 +110,10 @@ const server = (projectPackages, scopedDependencies) => {
   app.listen(3001, () => {
     console.log('listening http://localhost:3001');
   });
+
+  if (open) {
+    opener('http://localhost:3001');
+  }
 };
 
 export default server;

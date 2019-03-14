@@ -16,8 +16,9 @@ class ReleaseCommand {
   constructor(YargsConfig) {
     this.lernaProject = new Project();
     this.scope = YargsConfig.builder.scope.default;
-    this.scopedDependencies = YargsConfig.builder.scope.scopedDependencies;
+    this.scopedDependencies = YargsConfig.builder.scopedDependencies.default;
     this.scopedPackages = [];
+    this.open = YargsConfig.builder.open.default;
   }
 
   /**
@@ -57,13 +58,16 @@ class ReleaseCommand {
   handler = argv => {
     this.scope = argv.scope;
     this.scopedDependencies = argv.scopedDependencies;
+    this.open = argv.open;
     console.log(this.scope);
 
     this.lernaProject
       .getPackages()
       .then(projectPackages => {
         this._setScopedPackages(projectPackages);
-        server(this.scopedPackages, this.scopedDependencies);
+        server(this.scopedPackages, this.scopedDependencies, {
+          open: this.open
+        });
       })
       .catch(err => {
         log.error(err);
@@ -88,6 +92,11 @@ const YargsConfig = {
       describe: 'Glob for scoped dependencies',
       default: '.*',
       type: 'string'
+    },
+    open: {
+      describe: 'Open dependency graph in the browser',
+      default: true,
+      type: 'boolean'
     }
   }
 };
